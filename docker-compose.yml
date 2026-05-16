@@ -1,5 +1,3 @@
-version: '3'
-
 services:
   springboot:
     container_name: spring-dev # ec2내에서 동작하는 컨테이너명
