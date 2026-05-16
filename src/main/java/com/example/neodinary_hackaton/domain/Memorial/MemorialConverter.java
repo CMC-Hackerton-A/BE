@@ -1,5 +1,6 @@
 package com.example.neodinary_hackaton.domain.Memorial;
 
+import com.example.neodinary_hackaton.domain.Artist.entity.Artist;
 import com.example.neodinary_hackaton.domain.Memorial.dto.MemorialMessageRequest;
 import com.example.neodinary_hackaton.domain.Memorial.dto.MemorialMessageResponse;
 import com.example.neodinary_hackaton.domain.Memorial.dto.MemorialPageResponse;
@@ -11,10 +12,11 @@ import java.util.List;
 public class MemorialConverter {
 
     public static MemorialMessage toMemorialMessage(
-            MemorialMessageRequest.CreateMemorialMessageRequest request
+            MemorialMessageRequest.CreateMemorialMessageRequest request,
+            Artist artist
     ) {
         return MemorialMessage.builder()
-                .artistId(request.getArtistId())
+                .artist(artist)
                 .content(request.getContent())
                 .createdAt(LocalDateTime.now())
                 .build();
@@ -25,7 +27,7 @@ public class MemorialConverter {
     ) {
         return MemorialMessageResponse.CreateMemorialMessageResponse.builder()
                 .id(memorialMessage.getId())
-                .artistId(memorialMessage.getArtistId())
+                .artistId(memorialMessage.getArtist().getId())
                 .content(memorialMessage.getContent())
                 .createdAt(memorialMessage.getCreatedAt())
                 .build();
@@ -36,7 +38,7 @@ public class MemorialConverter {
     ) {
         return MemorialMessageResponse.MemorialMessageInfo.builder()
                 .id(memorialMessage.getId())
-                .artistId(memorialMessage.getArtistId())
+                .artistId(memorialMessage.getArtist().getId())
                 .content(memorialMessage.getContent())
                 .createdAt(memorialMessage.getCreatedAt())
                 .build();

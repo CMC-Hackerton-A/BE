@@ -1,5 +1,7 @@
 package com.example.neodinary_hackaton.domain.Memorial.service;
 
+import com.example.neodinary_hackaton.domain.Artist.entity.Artist;
+import com.example.neodinary_hackaton.domain.Artist.repository.ArtistRepository;
 import com.example.neodinary_hackaton.domain.Memorial.converter.MemorialConverter;
 import com.example.neodinary_hackaton.domain.Memorial.dto.MemorialMessageRequest;
 import com.example.neodinary_hackaton.domain.Memorial.dto.MemorialMessageResponse;
@@ -18,9 +20,11 @@ import java.util.List;
 public class MemorialService {
 
     private final MemorialMessageRepository memorialMessageRepository;
+    private final ArtistRepository artistRepository;
 
     public MemorialPageResponse.MemorialMessagesResponse getMemorialMessages() {
-        List<MemorialMessage> messages = memorialMessageRepository.findAllByOrderByCreatedAtDesc();
+        List<MemorialMessage> messages =
+                memorialMessageRepository.findAllByOrderByCreatedAtDesc();
 
         return MemorialConverter.toMemorialMessagesResponse(messages);
     }
@@ -29,9 +33,14 @@ public class MemorialService {
     public MemorialMessageResponse.CreateMemorialMessageResponse createMemorialMessage(
             MemorialMessageRequest.CreateMemorialMessageRequest request
     ) {
-        MemorialMessage memorialMessage = MemorialConverter.toMemorialMessage(request);
+        Artist artist = artistRepository.findById(request.getArtistId())
+                .orElseThrow(() -> new IllegalArgumentException("존재하지 않는 아티스트입니다."));
 
-        MemorialMessage savedMessage = memorialMessageRepository.save(memorialMessage);
+        MemorialMessage memorialMessage =
+                MemorialConverter.toMemorialMessage(request, artist);
+
+        MemorialMessage savedMessage =
+                memorialMessageRepository.save(memorialMessage);
 
         return MemorialConverter.toCreateMemorialMessageResponse(savedMessage);
     }
