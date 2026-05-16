@@ -9,6 +9,8 @@ import com.example.neodinary_hackaton.domain.Artist.repository.ArtistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.neodinary_hackaton.global.api.GeneralErrorCode;
+import com.example.neodinary_hackaton.global.api.ProjectException;
 
 import java.util.List;
 
@@ -42,7 +44,7 @@ public class ArtistService {
     @Transactional
     public ArtistResponseDto.StarIncreaseResponse increaseStarCount(Long artistId) {
         Artist artist = artistRepository.findById(artistId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 아티스트를 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.ARTIST_NOT_FOUND));
 
         artist.increaseStarCount();
 
