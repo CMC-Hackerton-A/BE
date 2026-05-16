@@ -1,6 +1,5 @@
 package com.example.neodinary_hackaton.domain.Artist.service;
 
-import com.example.neodinary_hackaton.domain.Artist.client.ArtistExternalClient;
 import com.example.neodinary_hackaton.domain.Artist.converter.ArtistConverter;
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistRequestDto;
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistResponseDto;
@@ -8,6 +7,7 @@ import com.example.neodinary_hackaton.domain.Artist.entity.Artist;
 import com.example.neodinary_hackaton.domain.Artist.repository.ArtistRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.util.StringUtils;
 
 import java.util.List;
 
@@ -16,13 +16,21 @@ import java.util.List;
 public class ArtistService {
 
     private final ArtistRepository artistRepository;
-    private final ArtistExternalClient artistExternalClient;
 
-    public List<ArtistResponseDto.SearchResponse> searchArtists(String name) {
-        ArtistRequestDto.ExternalRequest externalRequest =
-                artistExternalClient.fetchArtistExternalInfo(name);
+    public List<ArtistResponseDto.SearchResponse> searchArtists(String q) {
+        String keyword = q == null ? "" : q.trim();
 
-        return List.of(ArtistConverter.toSearchResponse(externalRequest));
+        if (!StringUtils.hasText(keyword)) {
+            return List.of();
+        }
+
+        List<ArtistResponseDto.SearchResponse> localResults = artistRepository
+                .searchTop10ByNameContaining(keyword)
+                .stream()
+                .map(ArtistConverter::toSearchResponse)
+                .toList();
+
+        return localResults;
     }
 
     public ArtistResponseDto.SearchResponse createArtist(ArtistRequestDto.SaveRequest request) {

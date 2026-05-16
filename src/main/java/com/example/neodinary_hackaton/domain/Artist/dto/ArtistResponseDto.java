@@ -9,18 +9,14 @@ public class ArtistResponseDto {
     @Builder
     public static class SearchResponse {
 
-        private Long id;
+        private String artistName;
 
-        private String mbid;
+        private String imageUrl;
 
-        private String name;
+        private String activeYears;
 
-        private Integer beginYear;
+        private String country;
 
-        private Integer endYear;
-
-        private Integer starCount;
-
-        private String artistImageUrl;
+        private String genre;
     }
 }

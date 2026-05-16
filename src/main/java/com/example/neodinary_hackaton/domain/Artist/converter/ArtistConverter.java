@@ -10,25 +10,21 @@ public class ArtistConverter {
 
     public static ArtistResponseDto.SearchResponse toSearchResponse(Artist artist) {
         return ArtistResponseDto.SearchResponse.builder()
-                .id(artist.getId())
-                .mbid(artist.getMbid())
-                .name(artist.getName())
-                .beginYear(artist.getBeginYear())
-                .endYear(artist.getEndYear())
-                .starCount(artist.getStarCount())
-                .artistImageUrl(artist.getArtistImageUrl())
+                .artistName(artist.getName())
+                .imageUrl(artist.getArtistImageUrl())
+                .activeYears(formatActiveYears(artist.getBeginYear(), artist.getEndYear()))
+                .country(artist.getCountry())
+                .genre(artist.getGenre())
                 .build();
     }
 
     public static ArtistResponseDto.SearchResponse toSearchResponse(ArtistRequestDto.ExternalRequest request) {
         return ArtistResponseDto.SearchResponse.builder()
-                .id(null)
-                .mbid(request.getMbid())
-                .name(request.getName())
-                .beginYear(request.getBeginYear())
-                .endYear(request.getEndYear())
-                .starCount(request.getStarCount())
-                .artistImageUrl(request.getArtistImageUrl())
+                .artistName(request.getName())
+                .imageUrl(request.getArtistImageUrl())
+                .activeYears(formatActiveYears(request.getBeginYear(), request.getEndYear()))
+                .country(request.getCountry())
+                .genre(request.getGenre())
                 .build();
     }
 
@@ -64,5 +60,24 @@ public class ArtistConverter {
                 .createdAt(now)
                 .updatedAt(now)
                 .build();
+    }
+
+    private static String formatActiveYears(Integer beginYear, Integer endYear) {
+        if (beginYear == null && endYear == null) {
+            return null;
+        }
+
+        String begin = beginYear != null ? beginYear.toString() : "";
+        String end = endYear != null ? endYear.toString() : "";
+
+        if (begin.isEmpty()) {
+            return "-" + end;
+        }
+
+        if (end.isEmpty()) {
+            return begin + "-";
+        }
+
+        return begin + "-" + end;
     }
 }

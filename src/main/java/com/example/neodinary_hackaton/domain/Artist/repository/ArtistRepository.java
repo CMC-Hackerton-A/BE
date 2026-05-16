@@ -13,14 +13,14 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
     @Query(value = """
             SELECT *
             FROM artist
-            WHERE LOWER(name) LIKE LOWER(CONCAT(:name, '%'))
+            WHERE LOWER(name) LIKE LOWER(CONCAT('%', :q, '%'))
             ORDER BY
                 CASE WHEN star_count IS NULL THEN 1 ELSE 0 END ASC,
                 star_count DESC,
                 id ASC
             LIMIT 10
             """, nativeQuery = true)
-    List<Artist> findTop10ByNameStartingWith(@Param("name") String name);
+    List<Artist> searchTop10ByNameContaining(@Param("q") String q);
 
     boolean existsByMbid(String mbid);
 

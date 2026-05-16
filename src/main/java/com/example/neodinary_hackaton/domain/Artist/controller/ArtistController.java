@@ -20,9 +20,9 @@ public class ArtistController {
 
     @GetMapping("/search")
     public ResponseEntity<ApiResponse<List<ArtistResponseDto.SearchResponse>>> searchArtists(
-            @RequestParam String name
+            @RequestParam("q") String q
     ) {
-        List<ArtistResponseDto.SearchResponse> result = artistService.searchArtists(name);
+        List<ArtistResponseDto.SearchResponse> result = artistService.searchArtists(q);
         return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
     }
 
