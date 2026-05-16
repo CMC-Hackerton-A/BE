@@ -1,4 +1,4 @@
-package com.example.neodinary_hackaton.domain.track.entity;
+package com.example.neodinary_hackaton.domain.Track.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

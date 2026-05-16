@@ -1,4 +1,4 @@
-package com.example.neodinary_hackaton.domain.artist.entity;
+package com.example.neodinary_hackaton.domain.Artist.entity;
 
 import jakarta.persistence.*;
 import lombok.*;

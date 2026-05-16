@@ -1,6 +1,6 @@
-package com.example.neodinary_hackaton.domain.track.repository;
+package com.example.neodinary_hackaton.domain.Track.repository;
 
-import com.example.neodinary_hackaton.domain.track.entity.Track;
+import com.example.neodinary_hackaton.domain.Track.entity.Track;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
 
