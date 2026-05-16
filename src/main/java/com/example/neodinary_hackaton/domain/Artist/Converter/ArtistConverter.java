@@ -36,4 +36,11 @@ public class ArtistConverter {
                 .updatedAt(now)
                 .build();
     }
+
+    public static ArtistResponseDto.StarIncreaseResponse toStarIncreaseResponse(Artist artist) {
+        return ArtistResponseDto.StarIncreaseResponse.builder()
+                .artistId(artist.getId())
+                .updatedStarCount(artist.getStarCount())
+                .build();
+    }
 }
