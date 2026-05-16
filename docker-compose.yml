@@ -1,0 +1,14 @@
+services:
+  springboot:
+    container_name: spring-dev # ec2내에서 동작하는 컨테이너명
+    image: stillstar/still_star:latest
+    ports:
+      - 8080:8080
+    environment:
+      SPRING_PROFILES_ACTIVE: dev
+    networks:
+      - my_network
+
+networks:
+  my_network:
+    driver: bridge
