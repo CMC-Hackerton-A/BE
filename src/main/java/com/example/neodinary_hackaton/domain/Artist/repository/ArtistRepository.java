@@ -1,4 +1,9 @@
-package com.example.neodinary_hackaton.domain.Artist.repository;
+package com.example.neodinary_hackaton.domain.artist.repository;
 
-public interface ArtistRepository {
+import com.example.neodinary_hackaton.domain.artist.entity.Artist;
+import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.stereotype.Repository;
+
+@Repository 
+public interface ArtistRepository extends JpaRepository<Artist, Long> {
 }
