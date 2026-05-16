@@ -1,7 +1,6 @@
 package com.example.neodinary_hackaton.domain.Artist.dto;
 
-import lombok.Builder;
-import lombok.Getter;
+import lombok.*;
 
 public class ArtistRequestDto {
 
@@ -31,6 +30,29 @@ public class ArtistRequestDto {
         private Integer starCount;
 
         // Spotify images[0].url
+        private String artistImageUrl;
+    }
+
+    @Getter
+    @NoArgsConstructor
+    @AllArgsConstructor
+    @Builder
+    public static class SaveRequest {
+
+        private String mbid;
+
+        private String name;
+
+        private Integer beginYear;
+
+        private Integer endYear;
+
+        private String country;
+
+        private String genre;
+
+        private Integer starCount;
+
         private String artistImageUrl;
     }
 }

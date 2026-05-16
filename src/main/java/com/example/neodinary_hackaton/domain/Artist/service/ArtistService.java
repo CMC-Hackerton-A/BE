@@ -1,7 +1,7 @@
 package com.example.neodinary_hackaton.domain.Artist.service;
 
 import com.example.neodinary_hackaton.domain.Artist.client.ArtistExternalClient;
-import com.example.neodinary_hackaton.domain.Artist.Converter.ArtistConverter;
+import com.example.neodinary_hackaton.domain.Artist.converter.ArtistConverter;
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistRequestDto;
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistResponseDto;
 import com.example.neodinary_hackaton.domain.Artist.entity.Artist;
@@ -19,22 +19,19 @@ public class ArtistService {
     private final ArtistExternalClient artistExternalClient;
 
     public List<ArtistResponseDto.SearchResponse> searchArtists(String name) {
-        List<Artist> artists = artistRepository.findTop10ByNameStartingWith(name);
+        ArtistRequestDto.ExternalRequest externalRequest =
+                artistExternalClient.fetchArtistExternalInfo(name);
 
-        if (artists.isEmpty()) {
-            ArtistRequestDto.ExternalRequest externalRequest =
-                    artistExternalClient.fetchArtistExternalInfo(name);
+        return List.of(ArtistConverter.toSearchResponse(externalRequest));
+    }
 
-            if (!artistRepository.existsByMbid(externalRequest.getMbid())) {
-                Artist artist = ArtistConverter.toArtist(externalRequest);
-                artistRepository.save(artist);
-            }
-
-            artists = artistRepository.findTop10ByNameStartingWith(name);
-        }
-
-        return artists.stream()
+    public ArtistResponseDto.SearchResponse createArtist(ArtistRequestDto.SaveRequest request) {
+        return artistRepository.findByMbid(request.getMbid())
                 .map(ArtistConverter::toSearchResponse)
-                .toList();
+                .orElseGet(() -> {
+                    Artist artist = ArtistConverter.toArtist(request);
+                    Artist savedArtist = artistRepository.save(artist);
+                    return ArtistConverter.toSearchResponse(savedArtist);
+                });
     }
 }

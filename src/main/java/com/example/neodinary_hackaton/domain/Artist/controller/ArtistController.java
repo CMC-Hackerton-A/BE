@@ -1,5 +1,6 @@
 package com.example.neodinary_hackaton.domain.Artist.controller;
 
+import com.example.neodinary_hackaton.domain.Artist.dto.ArtistRequestDto;
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistResponseDto;
 import com.example.neodinary_hackaton.domain.Artist.service.ArtistService;
 import com.example.neodinary_hackaton.global.api.ApiResponse;
@@ -23,5 +24,13 @@ public class ArtistController {
     ) {
         List<ArtistResponseDto.SearchResponse> result = artistService.searchArtists(name);
         return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
+    }
+
+    @PostMapping
+    public ResponseEntity<ApiResponse<ArtistResponseDto.SearchResponse>> createArtist(
+            @RequestBody ArtistRequestDto.SaveRequest request
+    ) {
+        ArtistResponseDto.SearchResponse result = artistService.createArtist(request);
+        return ApiResponse.onSuccessResponse(GeneralSuccessCode.POST_SUCCESS, result);
     }
 }

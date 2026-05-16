@@ -1,27 +1,10 @@
 spring:
   application:
     name: Neodinary_hackaton
-
-  datasource:
-    url: jdbc:mysql://localhost:${MYSQL_PORT}/${MYSQL_DATABASE}?serverTimezone=${TZ:Asia/Seoul}&characterEncoding=UTF-8
-    username: ${MYSQL_USER}
-    password: ${MYSQL_PASSWORD}
-    driver-class-name: com.mysql.cj.jdbc.Driver
-
   jpa:
     hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        show_sql: true
-        format_sql: true
-
-external:
-  spotify:
-    client-id: ${SPOTIFY_CLIENT_ID}
-    client-secret: ${SPOTIFY_CLIENT_SECRET}
-  musicbrainz:
-    user-agent: NeodinaryHackaton/1.0.0 (your-email@example.com)
+      naming:
+        physical-strategy: org.hibernate.boot.model.naming.CamelCaseToUnderscoresNamingStrategy
   profiles:
     active:
       dev
@@ -30,3 +13,9 @@ external:
         - local
       dev-env:
         - dev
+external:
+  spotify:
+    client-id: ${SPOTIFY_CLIENT_ID}
+    client-secret: ${SPOTIFY_CLIENT_SECRET}
+  musicbrainz:
+    user-agent: NeodinaryHackaton/1.0.0 (your-email@example.com)

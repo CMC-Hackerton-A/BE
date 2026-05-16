@@ -1,4 +1,4 @@
-package com.example.neodinary_hackaton.domain.Artist.Converter;
+package com.example.neodinary_hackaton.domain.Artist.converter;
 
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistRequestDto;
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistResponseDto;
@@ -20,7 +20,36 @@ public class ArtistConverter {
                 .build();
     }
 
+    public static ArtistResponseDto.SearchResponse toSearchResponse(ArtistRequestDto.ExternalRequest request) {
+        return ArtistResponseDto.SearchResponse.builder()
+                .id(null)
+                .mbid(request.getMbid())
+                .name(request.getName())
+                .beginYear(request.getBeginYear())
+                .endYear(request.getEndYear())
+                .starCount(request.getStarCount())
+                .artistImageUrl(request.getArtistImageUrl())
+                .build();
+    }
+
     public static Artist toArtist(ArtistRequestDto.ExternalRequest request) {
+        LocalDateTime now = LocalDateTime.now();
+
+        return Artist.builder()
+                .mbid(request.getMbid())
+                .name(request.getName())
+                .beginYear(request.getBeginYear())
+                .endYear(request.getEndYear())
+                .country(request.getCountry())
+                .genre(request.getGenre())
+                .starCount(request.getStarCount() != null ? request.getStarCount() : 0)
+                .artistImageUrl(request.getArtistImageUrl())
+                .createdAt(now)
+                .updatedAt(now)
+                .build();
+    }
+
+    public static Artist toArtist(ArtistRequestDto.SaveRequest request) {
         LocalDateTime now = LocalDateTime.now();
 
         return Artist.builder()

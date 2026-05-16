@@ -2,9 +2,11 @@ package com.example.neodinary_hackaton.domain.Artist.client;
 
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistRequestDto;
 import com.example.neodinary_hackaton.domain.Artist.dto.external.MusicBrainzArtistSearchResponse;
+import com.example.neodinary_hackaton.domain.Artist.dto.external.SpotifyAlbumSearchResponse;
 import com.example.neodinary_hackaton.domain.Artist.dto.external.SpotifyArtistSearchResponse;
 import com.example.neodinary_hackaton.domain.Artist.dto.external.SpotifyTokenResponse;
 import lombok.RequiredArgsConstructor;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
 import org.springframework.stereotype.Component;
@@ -16,6 +18,7 @@ import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 
+@Slf4j
 @Component
 @RequiredArgsConstructor
 public class ArtistExternalClient {
@@ -32,8 +35,17 @@ public class ArtistExternalClient {
     private String musicBrainzUserAgent;
 
     public ArtistRequestDto.ExternalRequest fetchArtistExternalInfo(String name) {
+        log.info("[Artist] fetchArtistExternalInfo 시작, name={}", name);
+
         MusicBrainzArtistSearchResponse.MusicBrainzArtist musicBrainzArtist =
                 fetchMusicBrainzArtist(name);
+
+        log.info("[MusicBrainz] mbid={}, name={}, country={}, genres={}, tags={}",
+                musicBrainzArtist.getId(),
+                musicBrainzArtist.getName(),
+                musicBrainzArtist.getCountry(),
+                musicBrainzArtist.getGenres(),
+                musicBrainzArtist.getTags());
 
         SpotifyArtistSearchResponse.SpotifyArtist spotifyArtist = null;
 
@@ -41,8 +53,19 @@ public class ArtistExternalClient {
             spotifyArtist = fetchSpotifyArtist(musicBrainzArtist.getName());
         } catch (Exception e) {
             // Spotify 호출 실패 시에도 전체 검색 API는 실패시키지 않음.
-            // 현재 Spotify Premium 제한 등으로 403이 날 수 있으므로 이미지/Spotify 장르는 null 처리.
+            log.warn("[Spotify] fetchSpotifyArtist 실패, name={}, message={}",
+                    musicBrainzArtist.getName(), e.getMessage(), e);
             spotifyArtist = null;
+        }
+
+        if (spotifyArtist == null) {
+            log.warn("[Spotify] 최종 spotifyArtist == null (이미지/장르 null 처리됨)");
+        } else {
+            log.info("[Spotify] 최종 artist id={}, name={}, genres={}, images={}",
+                    spotifyArtist.getId(),
+                    spotifyArtist.getName(),
+                    spotifyArtist.getGenres(),
+                    spotifyArtist.getImages());
         }
 
         return ArtistRequestDto.ExternalRequest.builder()
@@ -66,6 +89,7 @@ public class ArtistExternalClient {
     }
 
     private MusicBrainzArtistSearchResponse.MusicBrainzArtist fetchMusicBrainzArtist(String name) {
+
         URI uri = UriComponentsBuilder
                 .fromUriString("https://musicbrainz.org/ws/2/artist")
                 .queryParam("query", "artist:" + name)
@@ -76,6 +100,8 @@ public class ArtistExternalClient {
                 .encode()
                 .toUri();
 
+        log.info("[MusicBrainz] artist search 요청 uri={}", uri);
+
         MusicBrainzArtistSearchResponse response = restClient.get()
                 .uri(uri)
                 .header(HttpHeaders.USER_AGENT, musicBrainzUserAgent)
@@ -83,6 +109,7 @@ public class ArtistExternalClient {
                 .body(MusicBrainzArtistSearchResponse.class);
 
         if (response == null || response.getArtists() == null || response.getArtists().isEmpty()) {
+            log.warn("[MusicBrainz] artist search 응답 비어있음, response={}", response);
             throw new IllegalArgumentException("MusicBrainz에서 해당 아티스트를 찾을 수 없습니다.");
         }
 
@@ -92,29 +119,94 @@ public class ArtistExternalClient {
     private SpotifyArtistSearchResponse.SpotifyArtist fetchSpotifyArtist(String name) {
         String accessToken = getSpotifyAccessToken();
 
+        // 1) album 검색으로 artist id 후보 찾기
+        String artistId = findSpotifyArtistIdViaAlbumSearch(name, accessToken);
+        if (artistId == null) {
+            log.warn("[Spotify] album search 결과에서 매칭되는 artistId를 찾지 못함, name={}", name);
+            return null;
+        }
+
+        // 2) artist id로 상세 조회 (images, genres 포함)
+        return fetchSpotifyArtistById(artistId, accessToken);
+    }
+
+    private String findSpotifyArtistIdViaAlbumSearch(String name, String accessToken) {
         URI uri = UriComponentsBuilder
                 .fromUriString("https://api.spotify.com/v1/search")
                 .queryParam("q", name)
-                .queryParam("type", "artist")
-                .queryParam("limit", 1)
+                .queryParam("type", "album")
+                .queryParam("limit", 20)
                 .build()
                 .encode()
                 .toUri();
 
-        SpotifyArtistSearchResponse response = restClient.get()
+        log.info("[Spotify] album search 요청 uri={}", uri);
+
+        SpotifyAlbumSearchResponse response = restClient.get()
                 .uri(uri)
                 .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
                 .retrieve()
-                .body(SpotifyArtistSearchResponse.class);
+                .body(SpotifyAlbumSearchResponse.class);
 
         if (response == null
-                || response.getArtists() == null
-                || response.getArtists().getItems() == null
-                || response.getArtists().getItems().isEmpty()) {
+                || response.getAlbums() == null
+                || response.getAlbums().getItems() == null) {
+            log.warn("[Spotify] album search 응답 비어있음, response={}", response);
             return null;
         }
 
-        return response.getArtists().getItems().get(0);
+        // 디버깅: 어떤 앨범/아티스트들이 검색됐는지 전부 찍기
+        response.getAlbums().getItems().forEach(album -> {
+            if (album.getArtists() == null) return;
+            album.getArtists().forEach(a ->
+                    log.info("[Spotify] album 후보 album.name='{}' → artist.id={}, artist.name='{}'",
+                            album.getName(), a.getId(), a.getName())
+            );
+        });
+
+        String matchedId = response.getAlbums().getItems().stream()
+                .filter(album -> album.getArtists() != null)
+                .flatMap(album -> album.getArtists().stream())
+                .filter(a -> a.getName() != null && a.getName().equalsIgnoreCase(name))
+                .map(SpotifyAlbumSearchResponse.AlbumArtist::getId)
+                .findFirst()
+                .orElse(null);
+
+        log.info("[Spotify] album search 매칭 결과, 입력 name='{}', matched artistId={}",
+                name, matchedId);
+
+        return matchedId;
+    }
+
+    private SpotifyArtistSearchResponse.SpotifyArtist fetchSpotifyArtistById(
+            String artistId, String accessToken
+    ) {
+        URI uri = UriComponentsBuilder
+                .fromUriString("https://api.spotify.com/v1/artists/" + artistId)
+                .build()
+                .encode()
+                .toUri();
+
+        log.info("[Spotify] artist detail 요청 uri={}", uri);
+
+        SpotifyArtistSearchResponse.SpotifyArtist artist = restClient.get()
+                .uri(uri)
+                .header(HttpHeaders.AUTHORIZATION, "Bearer " + accessToken)
+                .retrieve()
+                .body(SpotifyArtistSearchResponse.SpotifyArtist.class);
+
+        if (artist == null) {
+            log.warn("[Spotify] artist detail 응답이 null, artistId={}", artistId);
+        } else {
+            log.info("[Spotify] artist detail 응답 id={}, name={}, genres={}, images.size={}, images={}",
+                    artist.getId(),
+                    artist.getName(),
+                    artist.getGenres(),
+                    artist.getImages() == null ? null : artist.getImages().size(),
+                    artist.getImages());
+        }
+
+        return artist;
     }
 
     private String getSpotifyAccessToken() {
@@ -134,10 +226,18 @@ public class ArtistExternalClient {
                 .body(SpotifyTokenResponse.class);
 
         if (response == null || response.getAccessToken() == null) {
+            log.error("[Spotify] access token 발급 실패, response={}", response);
             throw new IllegalArgumentException("Spotify access token 발급에 실패했습니다.");
         }
 
-        return response.getAccessToken();
+        String token = response.getAccessToken();
+        String tokenPrefix = token.substring(0, Math.min(10, token.length())) + "...";
+        log.info("[Spotify] access token 발급 성공, tokenType={}, expiresIn={}, tokenPrefix={}",
+                response.getTokenType(),
+                response.getExpiresIn(),
+                tokenPrefix);
+
+        return token;
     }
 
     private Integer extractYear(String date) {

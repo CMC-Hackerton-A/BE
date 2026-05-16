@@ -6,6 +6,7 @@ import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
+import java.util.Optional;
 
 public interface ArtistRepository extends JpaRepository<Artist, Long> {
 
@@ -22,4 +23,6 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
     List<Artist> findTop10ByNameStartingWith(@Param("name") String name);
 
     boolean existsByMbid(String mbid);
+
+    Optional<Artist> findByMbid(String mbid);
 }
