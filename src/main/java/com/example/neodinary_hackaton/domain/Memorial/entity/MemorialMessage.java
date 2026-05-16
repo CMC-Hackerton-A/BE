@@ -10,7 +10,6 @@ import com.example.neodinary_hackaton.domain.Artist.entity.Artist;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-@Table(name = "message")
 public class MemorialMessage {
 
     @Id
