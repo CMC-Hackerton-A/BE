@@ -30,9 +30,6 @@ public class Artist {
     @Column(length = 100)
     private String genre;
 
-    @Column(nullable = false)
-    private Integer starCount;
-
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
