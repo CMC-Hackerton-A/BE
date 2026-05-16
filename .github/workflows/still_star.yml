@@ -80,11 +80,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          docker build -t "$DOCKER_IMAGE" .
+          sudo docker build -t "$DOCKER_IMAGE" .
 
       - name: Push Docker image
         run: |
-          docker push "$DOCKER_IMAGE"
+          sudo docker push "$DOCKER_IMAGE"
 
       - name: Get GitHub public IP
         id: ip
