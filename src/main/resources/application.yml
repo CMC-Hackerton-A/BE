@@ -22,3 +22,11 @@ external:
     client-secret: ${SPOTIFY_CLIENT_SECRET}
   musicbrainz:
     user-agent: NeodinaryHackaton/1.0.0 (your-email@example.com)
+  profiles:
+    active:
+      dev
+    group:
+      local-env:
+        - local
+      dev-env:
+        - dev
