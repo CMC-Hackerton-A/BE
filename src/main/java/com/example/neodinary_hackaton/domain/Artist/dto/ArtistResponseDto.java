@@ -28,6 +28,8 @@ public class ArtistResponseDto {
     @Builder
     public static class TopArtistResponse {
 
+        private Long artistId;
+
         private String artistName;
 
         private String imageUrl;

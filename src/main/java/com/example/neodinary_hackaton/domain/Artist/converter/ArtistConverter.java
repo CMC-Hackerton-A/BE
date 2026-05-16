@@ -34,6 +34,7 @@ public class ArtistConverter {
 
     public static ArtistResponseDto.TopArtistResponse toTopArtistResponse(Artist artist) {
         return ArtistResponseDto.TopArtistResponse.builder()
+                .artistId(artist.getId())
                 .artistName(artist.getName())
                 .imageUrl(artist.getArtistImageUrl())
                 .activityPeriod(formatActivityPeriod(artist.getBeginYear(), artist.getEndYear()))
