@@ -15,3 +15,10 @@ spring:
       hibernate:
         show_sql: true
         format_sql: true
+
+external:
+  spotify:
+    client-id: ${SPOTIFY_CLIENT_ID}
+    client-secret: ${SPOTIFY_CLIENT_SECRET}
+  musicbrainz:
+    user-agent: NeodinaryHackaton/1.0.0 (your-email@example.com)

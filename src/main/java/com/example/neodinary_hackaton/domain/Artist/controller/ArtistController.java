@@ -6,17 +6,15 @@ import com.example.neodinary_hackaton.global.api.ApiResponse;
 import com.example.neodinary_hackaton.global.api.GeneralSuccessCode;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.ResponseEntity;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/artists")
+@RequestMapping("/artists")
 public class ArtistController {
+
     private final ArtistService artistService;
 
     @GetMapping("/search")
