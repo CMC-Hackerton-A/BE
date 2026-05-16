@@ -33,7 +33,7 @@ public class Artist {
     @Column(nullable = false)
     private Integer starCount;
 
-    @Column(nullable = false)
+    @Column(length = 500)
     private String artistImageUrl;
 
     @Column(nullable = false, updatable = false)
