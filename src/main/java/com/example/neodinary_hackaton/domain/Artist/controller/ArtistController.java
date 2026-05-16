@@ -33,6 +33,14 @@ public class ArtistController {
         return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
     }
 
+    @GetMapping("/{artistId}")
+    public ResponseEntity<ApiResponse<ArtistResponseDto.DetailResponse>> getArtistDetail(
+            @PathVariable Long artistId
+    ) {
+        ArtistResponseDto.DetailResponse result = artistService.getArtistDetail(artistId);
+        return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<ArtistResponseDto.SearchResponse>> createArtist(
             @RequestBody ArtistRequestDto.SaveRequest request

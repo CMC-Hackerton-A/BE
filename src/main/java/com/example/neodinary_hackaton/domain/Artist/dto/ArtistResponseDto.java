@@ -40,4 +40,25 @@ public class ArtistResponseDto {
 
         private Integer starCount;
     }
+
+    @Getter
+    @Builder
+    public static class DetailResponse {
+
+        private Long artistId;
+
+        private String artistName;
+
+        private String imageUrl;
+
+        private String genre;
+
+        private String country;
+
+        private String activityPeriod;
+
+        private String activityYears;
+
+        private Integer starCount;
+    }
 }

@@ -5,6 +5,8 @@ import com.example.neodinary_hackaton.domain.Artist.dto.ArtistRequestDto;
 import com.example.neodinary_hackaton.domain.Artist.dto.ArtistResponseDto;
 import com.example.neodinary_hackaton.domain.Artist.entity.Artist;
 import com.example.neodinary_hackaton.domain.Artist.repository.ArtistRepository;
+import com.example.neodinary_hackaton.global.api.GeneralErrorCode;
+import com.example.neodinary_hackaton.global.api.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
@@ -38,6 +40,13 @@ public class ArtistService {
                 .stream()
                 .map(ArtistConverter::toTopArtistResponse)
                 .toList();
+    }
+
+    public ArtistResponseDto.DetailResponse getArtistDetail(Long artistId) {
+        Artist artist = artistRepository.findById(artistId)
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.NOT_FOUND));
+
+        return ArtistConverter.toDetailResponse(artist);
     }
 
     public ArtistResponseDto.SearchResponse createArtist(ArtistRequestDto.SaveRequest request) {

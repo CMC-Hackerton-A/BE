@@ -43,6 +43,19 @@ public class ArtistConverter {
                 .build();
     }
 
+    public static ArtistResponseDto.DetailResponse toDetailResponse(Artist artist) {
+        return ArtistResponseDto.DetailResponse.builder()
+                .artistId(artist.getId())
+                .artistName(artist.getName())
+                .imageUrl(artist.getArtistImageUrl())
+                .genre(artist.getGenre())
+                .country(artist.getCountry())
+                .activityPeriod(formatActivityPeriod(artist.getBeginYear(), artist.getEndYear()))
+                .activityYears(formatActivityYears(artist.getBeginYear(), artist.getEndYear()))
+                .starCount(artist.getStarCount())
+                .build();
+    }
+
     public static Artist toArtist(ArtistRequestDto.ExternalRequest request) {
         LocalDateTime now = LocalDateTime.now();
 
