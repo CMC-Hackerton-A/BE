@@ -42,6 +42,8 @@ jobs:
     if: github.event_name == 'push' && github.ref == 'refs/heads/main'
     runs-on: ubuntu-24.04
     timeout-minutes: 30
+    env:
+      DOCKER_IMAGE: ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
 
     steps:
       - name: Checkout
@@ -78,11 +80,11 @@ jobs:
 
       - name: Build Docker image
         run: |
-          sudo docker build -t ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest .
+          docker build -t "$DOCKER_IMAGE" .
 
       - name: Push Docker image
         run: |
-          sudo docker push ${{ secrets.DOCKER_USERNAME }}/${{ secrets.DOCKER_REPO }}:latest
+          docker push "$DOCKER_IMAGE"
 
       - name: Get GitHub public IP
         id: ip
@@ -123,6 +125,7 @@ jobs:
           port: 22
           script: |
             cd Still_Star
+            export DOCKER_IMAGE="${{ env.DOCKER_IMAGE }}"
             sudo docker compose pull
             sudo docker compose up -d --remove-orphans
             sudo docker image prune -f
