@@ -1,4 +1,4 @@
-package com.example.neodinary_hackaton.domain.Artist.service;
+package com.example.neodinary_hackaton.domain.Track.service;
 
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -7,5 +7,5 @@ import org.springframework.transaction.annotation.Transactional;
 @Service
 @RequiredArgsConstructor
 @Transactional(readOnly = true)
-public class ArtistService {
+public class TrackService {
 }
