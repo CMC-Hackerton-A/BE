@@ -33,6 +33,9 @@ public class Artist {
     @Column(nullable = false)
     private Integer starCount;
 
+    @Column(nullable = false)
+    private String artistImageUrl;
+
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdAt;
 
