@@ -9,6 +9,8 @@ public class ArtistResponseDto {
     @Builder
     public static class SearchResponse {
 
+        private Long artistId;
+
         private String artistName;
 
         private String imageUrl;

@@ -10,6 +10,7 @@ public class ArtistConverter {
 
     public static ArtistResponseDto.SearchResponse toSearchResponse(Artist artist) {
         return ArtistResponseDto.SearchResponse.builder()
+                .artistId(artist.getId())
                 .artistName(artist.getName())
                 .imageUrl(artist.getArtistImageUrl())
                 .activityPeriod(formatActivityPeriod(artist.getBeginYear(), artist.getEndYear()))
@@ -21,6 +22,7 @@ public class ArtistConverter {
 
     public static ArtistResponseDto.SearchResponse toSearchResponse(ArtistRequestDto.ExternalRequest request) {
         return ArtistResponseDto.SearchResponse.builder()
+                .artistId(null)
                 .artistName(request.getName())
                 .imageUrl(request.getArtistImageUrl())
                 .activityPeriod(formatActivityPeriod(request.getBeginYear(), request.getEndYear()))
