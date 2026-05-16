@@ -12,7 +12,8 @@ public class ArtistConverter {
         return ArtistResponseDto.SearchResponse.builder()
                 .artistName(artist.getName())
                 .imageUrl(artist.getArtistImageUrl())
-                .activeYears(formatActiveYears(artist.getBeginYear(), artist.getEndYear()))
+                .activityPeriod(formatActivityPeriod(artist.getBeginYear(), artist.getEndYear()))
+                .activityYears(formatActivityYears(artist.getBeginYear(), artist.getEndYear()))
                 .country(artist.getCountry())
                 .genre(artist.getGenre())
                 .build();
@@ -22,7 +23,8 @@ public class ArtistConverter {
         return ArtistResponseDto.SearchResponse.builder()
                 .artistName(request.getName())
                 .imageUrl(request.getArtistImageUrl())
-                .activeYears(formatActiveYears(request.getBeginYear(), request.getEndYear()))
+                .activityPeriod(formatActivityPeriod(request.getBeginYear(), request.getEndYear()))
+                .activityYears(formatActivityYears(request.getBeginYear(), request.getEndYear()))
                 .country(request.getCountry())
                 .genre(request.getGenre())
                 .build();
@@ -62,7 +64,7 @@ public class ArtistConverter {
                 .build();
     }
 
-    private static String formatActiveYears(Integer beginYear, Integer endYear) {
+    private static String formatActivityPeriod(Integer beginYear, Integer endYear) {
         if (beginYear == null && endYear == null) {
             return null;
         }
@@ -71,13 +73,21 @@ public class ArtistConverter {
         String end = endYear != null ? endYear.toString() : "";
 
         if (begin.isEmpty()) {
-            return "-" + end;
+            return " - " + end;
         }
 
         if (end.isEmpty()) {
-            return begin + "-";
+            return begin + " - ";
         }
 
-        return begin + "-" + end;
+        return begin + " - " + end;
+    }
+
+    private static String formatActivityYears(Integer beginYear, Integer endYear) {
+        if (beginYear == null || endYear == null || endYear < beginYear) {
+            return null;
+        }
+
+        return String.valueOf(endYear - beginYear + 1);
     }
 }

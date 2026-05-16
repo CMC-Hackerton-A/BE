@@ -13,7 +13,9 @@ public class ArtistResponseDto {
 
         private String imageUrl;
 
-        private String activeYears;
+        private String activityPeriod;
+
+        private String activityYears;
 
         private String country;
 
