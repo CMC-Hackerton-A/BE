@@ -3,6 +3,10 @@ package com.example.neodinary_hackaton.domain.Artist.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import com.example.neodinary_hackaton.domain.Album.entity.Album;
+import com.example.neodinary_hackaton.domain.Memorial.entity.MemorialMessage;
+import java.util.List;
+import java.util.ArrayList;
 
 @Entity
 @Getter
@@ -41,4 +45,12 @@ public class Artist {
 
     @Column(nullable = false)
     private LocalDateTime updatedAt;
+
+    @Builder.Default
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<MemorialMessage> messages = new ArrayList<>();
+
+    @Builder.Default
+    @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
+    private List<Album> albums = new ArrayList<>();
 }

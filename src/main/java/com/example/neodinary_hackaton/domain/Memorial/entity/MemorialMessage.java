@@ -3,6 +3,7 @@ package com.example.neodinary_hackaton.domain.Memorial.entity;
 import jakarta.persistence.*;
 import lombok.*;
 import java.time.LocalDateTime;
+import com.example.neodinary_hackaton.domain.Artist.entity.Artist;
 
 @Entity
 @Getter
@@ -16,8 +17,9 @@ public class MemorialMessage {
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Long id;
 
-    @Column(nullable = false)
-    private Long artistId;
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "artist_id", nullable = false)
+    private Artist artist;
 
     @Column(columnDefinition = "TEXT")
     private String content;
