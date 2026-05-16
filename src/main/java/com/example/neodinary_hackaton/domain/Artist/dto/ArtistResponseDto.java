@@ -21,4 +21,19 @@ public class ArtistResponseDto {
 
         private String genre;
     }
+
+    @Getter
+    @Builder
+    public static class TopArtistResponse {
+
+        private String artistName;
+
+        private String imageUrl;
+
+        private String activityPeriod;
+
+        private String activityYears;
+
+        private Integer starCount;
+    }
 }

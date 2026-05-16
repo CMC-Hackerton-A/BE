@@ -26,6 +26,13 @@ public class ArtistController {
         return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
     }
 
+    @GetMapping("/top")
+    public ResponseEntity<ApiResponse<List<ArtistResponseDto.TopArtistResponse>>> getTopArtists() {
+        List<ArtistResponseDto.TopArtistResponse> result =
+                artistService.getTopArtistsByStarCount();
+        return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
+    }
+
     @PostMapping
     public ResponseEntity<ApiResponse<ArtistResponseDto.SearchResponse>> createArtist(
             @RequestBody ArtistRequestDto.SaveRequest request

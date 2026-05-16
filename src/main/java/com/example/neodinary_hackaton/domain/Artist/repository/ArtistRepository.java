@@ -22,6 +22,17 @@ public interface ArtistRepository extends JpaRepository<Artist, Long> {
             """, nativeQuery = true)
     List<Artist> searchTop10ByNameContaining(@Param("q") String q);
 
+    @Query(value = """
+            SELECT *
+            FROM artist
+            ORDER BY
+                CASE WHEN star_count IS NULL THEN 1 ELSE 0 END ASC,
+                star_count DESC,
+                id ASC
+            LIMIT 10
+            """, nativeQuery = true)
+    List<Artist> findTop10OrderByStarCountDesc();
+
     boolean existsByMbid(String mbid);
 
     Optional<Artist> findByMbid(String mbid);

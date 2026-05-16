@@ -33,6 +33,13 @@ public class ArtistService {
         return localResults;
     }
 
+    public List<ArtistResponseDto.TopArtistResponse> getTopArtistsByStarCount() {
+        return artistRepository.findTop10OrderByStarCountDesc()
+                .stream()
+                .map(ArtistConverter::toTopArtistResponse)
+                .toList();
+    }
+
     public ArtistResponseDto.SearchResponse createArtist(ArtistRequestDto.SaveRequest request) {
         return artistRepository.findByMbid(request.getMbid())
                 .map(ArtistConverter::toSearchResponse)
