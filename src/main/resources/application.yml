@@ -1,7 +1,7 @@
 spring:
   profiles:
-    #active:
-    #local {서버를 시작할 때 적용할 yml명}
+    active:
+      dev
     group:
       local-env:
         - local
