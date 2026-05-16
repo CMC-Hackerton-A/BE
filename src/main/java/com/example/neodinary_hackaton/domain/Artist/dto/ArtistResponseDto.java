@@ -23,4 +23,11 @@ public class ArtistResponseDto {
 
         private String artistImageUrl;
     }
+
+    @Getter
+    @Builder
+    public static class StarIncreaseResponse {
+        private Long artistId;
+        private Integer updatedStarCount;
+    }
 }

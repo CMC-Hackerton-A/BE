@@ -53,4 +53,11 @@ public class Artist {
     @Builder.Default
     @OneToMany(mappedBy = "artist", cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Album> albums = new ArrayList<>();
+
+    public void increaseStarCount() {
+        if (this.starCount == null) {
+            this.starCount = 0;
+        }
+        this.starCount += 1;
+    }
 }

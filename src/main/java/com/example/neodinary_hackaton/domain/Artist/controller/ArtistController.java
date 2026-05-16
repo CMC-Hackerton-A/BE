@@ -24,4 +24,12 @@ public class ArtistController {
         List<ArtistResponseDto.SearchResponse> result = artistService.searchArtists(name);
         return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
     }
+
+    @PatchMapping("/{artist_id}/stars")
+    public ResponseEntity<ApiResponse<ArtistResponseDto.StarIncreaseResponse>> increaseStarCount(
+            @PathVariable(name = "artist_id") Long artistId
+    ) {
+        ArtistResponseDto.StarIncreaseResponse result = artistService.increaseStarCount(artistId);
+        return ApiResponse.onSuccessResponse(GeneralSuccessCode.GET_SUCCESS, result);
+    }
 }
