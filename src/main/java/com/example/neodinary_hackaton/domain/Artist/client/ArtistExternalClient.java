@@ -4,6 +4,8 @@ import com.example.neodinary_hackaton.domain.Artist.dto.ArtistRequestDto;
 import com.example.neodinary_hackaton.domain.Artist.dto.external.MusicBrainzArtistSearchResponse;
 import com.example.neodinary_hackaton.domain.Artist.dto.external.SpotifyArtistSearchResponse;
 import com.example.neodinary_hackaton.domain.Artist.dto.external.SpotifyTokenResponse;
+import com.example.neodinary_hackaton.global.api.GeneralErrorCode;
+import com.example.neodinary_hackaton.global.api.ProjectException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.*;
@@ -15,6 +17,7 @@ import org.springframework.web.util.UriComponentsBuilder;
 import java.net.URI;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
+import java.util.List;
 
 @Component
 @RequiredArgsConstructor
@@ -83,7 +86,7 @@ public class ArtistExternalClient {
                 .body(MusicBrainzArtistSearchResponse.class);
 
         if (response == null || response.getArtists() == null || response.getArtists().isEmpty()) {
-            throw new IllegalArgumentException("MusicBrainz에서 해당 아티스트를 찾을 수 없습니다.");
+            throw new ProjectException(GeneralErrorCode.ARTIST_NOT_FOUND);
         }
 
         return response.getArtists().get(0);
@@ -134,7 +137,7 @@ public class ArtistExternalClient {
                 .body(SpotifyTokenResponse.class);
 
         if (response == null || response.getAccessToken() == null) {
-            throw new IllegalArgumentException("Spotify access token 발급에 실패했습니다.");
+            throw new ProjectException(GeneralErrorCode.EXTERNAL_API_ERROR);
         }
 
         return response.getAccessToken();

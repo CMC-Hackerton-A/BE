@@ -9,6 +9,8 @@ import com.example.neodinary_hackaton.domain.Track.repository.TrackRepository;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import com.example.neodinary_hackaton.global.api.GeneralErrorCode;
+import com.example.neodinary_hackaton.global.api.ProjectException;
 
 @Service
 @RequiredArgsConstructor
@@ -20,7 +22,7 @@ public class AlbumService {
 
     public AlbumResponseDto.LastAlbumAndTrackResponse getLastAlbumAndTrack(Long artistId) {
         Album lastAlbum = albumRepository.findByArtistIdAndIsLastTrue(artistId)
-                .orElseThrow(() -> new IllegalArgumentException("해당 아티스트의 마지막 앨범을 찾을 수 없습니다."));
+                .orElseThrow(() -> new ProjectException(GeneralErrorCode.LAST_ALBUM_NOT_FOUND));
 
         Track lastTrack = trackRepository.findByAlbumIdAndTrackType(lastAlbum.getId(), "LAST")
                 .orElse(null);
