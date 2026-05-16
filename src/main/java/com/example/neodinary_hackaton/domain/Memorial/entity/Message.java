@@ -1,4 +1,4 @@
-package com.example.neodinary_hackaton.domain.Track.entity;
+package com.example.neodinary_hackaton.domain.memorial.entity;
 
 import jakarta.persistence.*;
 import lombok.*;
@@ -9,7 +9,7 @@ import java.time.LocalDateTime;
 @Builder
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @AllArgsConstructor
-public class Track {
+public class Message {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,16 +18,9 @@ public class Track {
     @Column(nullable = false)
     private Long artistId;
 
-    private Long albumId;
+    @Column(columnDefinition = "TEXT")
+    private String content;
 
-    @Column(nullable = false)
-    private String name;
-
-    @Column(nullable = false, length = 10)
-    private String trackType;
-
-    private Integer trackOrder;
-
-    @Column(nullable = false, updatable = false)
+    @Column(updatable = false)
     private LocalDateTime createdAt;
 }
